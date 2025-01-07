@@ -59,9 +59,8 @@ namespace ASPNET_WebAPI.Controllers
         }
 
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<Results<CreatedAtRoute<UserDTO>, BadRequest>> Create(CreateUserDTO user, CancellationToken cancellationToken)
+        public async Task<CreatedAtRoute<UserDTO>> Create(CreateUserDTO user, CancellationToken cancellationToken)
         {
             // implicitly returns BadRequest() if the Body of the request is not valid
 
@@ -75,7 +74,7 @@ namespace ASPNET_WebAPI.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
         public async Task<Results<NoContent, NotFound<ProblemDetails>, BadRequest<ProblemDetails>>> Update(int id, UpdateUserDTO user, CancellationToken cancellationToken)
@@ -104,10 +103,9 @@ namespace ASPNET_WebAPI.Controllers
             return TypedResults.NoContent();
         }
 
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
-        public async Task<Results<NoContent, NotFound<ProblemDetails>, BadRequest>> Delete(int id, CancellationToken cancellationToken)
+        public async Task<Results<NoContent, NotFound<ProblemDetails>>> Delete(int id, CancellationToken cancellationToken)
         {
             // Not sure if this check should be here, or in the service
             var existingUser = await _userService.GetByIdAsync(id, cancellationToken);

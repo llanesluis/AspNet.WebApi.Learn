@@ -2,13 +2,17 @@ using ASPNET_WebAPI;
 using ASPNET_WebAPI.Data;
 using ASPNET_WebAPI.Repositories.UserRepository;
 using ASPNET_WebAPI.Services.UserService;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+{
+    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), StatusCodes.Status400BadRequest));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
