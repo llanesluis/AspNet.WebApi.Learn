@@ -1,0 +1,34 @@
+@ASPNET_WebAPI_HostAddress = https://localhost:7073
+
+
+GET {{ASPNET_WebAPI_HostAddress}}/api/user
+
+###
+
+POST {{ASPNET_WebAPI_HostAddress}}/api/user
+Content-Type: application/json
+
+{
+  
+}
+
+###
+
+GET {{ASPNET_WebAPI_HostAddress}}/api/user/1
+
+###
+
+DELETE {{ASPNET_WebAPI_HostAddress}}/api/user/2
+
+###
+
+PUT {{ASPNET_WebAPI_HostAddress}}/api/user/1
+Content-Type: application/json
+
+{
+  "Id": "1",
+  "name" : "Luis",
+  "email": "luis@gmail.com"
+}
+
+###

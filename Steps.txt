@@ -1,0 +1,31 @@
+// TODO: Rewrite the order of the steps now including the DTOs and Repositories
+
+// 1 - Create a Model => root / Models / Model.cs
+
+// 2 - Create a DbContext => root / Data / AppDbContext.cs
+// 3 - Add the database sets here (DbSet<T>) 
+
+// 4 - Add the connection string to the appsettings.json file or appsettings.Development.json file
+// "ConnectionStrings" : { "NameOfYourConnection" : "your_connection_string" }
+
+// 5 - Register the DbContext as a service
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("NameOfYourConnection");
+    options.<TheSqlAdapter>(connectionString);
+});
+
+// 6 - Add-Migrations NameOfTheMigration 	=> (create the migration files)
+// 7 - Update-Database 				        => (push the schema to the database)
+//      Code First Approach
+
+// 8 - Create a Service => root / Services / NameService.cs
+//      inject and use the DbContext in the service
+
+// NOTE: Services should be created from an interface and injected as interfaces, in case you want to change the implementation later
+
+// 9 - Register the Service as a service in the DI Container, the in the Program.cs file => root / Program.cs
+// builder.Services.AddScoped<INameService, NameService>();
+
+// 10 - Create a Controller => root / Controllers / NameController.cs
+//      inject and use the service in the controller
