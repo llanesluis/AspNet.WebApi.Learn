@@ -4,15 +4,22 @@ using ASPNET_WebAPI.Repositories.UserRepository;
 
 namespace ASPNET_WebAPI.Services.UserService
 {
+    // 10 - Create a Service => root / Services / ... / NameService.cs
     public sealed class UserService : IUserService
     {
+        // 10.1 - Create private readonly field for the repository to be injected
         private readonly IUserRepository _userRepository;
 
+        // 10.2 - Inject the repository via the constructor
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
+        // 10.3 - Implement the methods from the interface
+        // this layer takes (if necessary) and returns filtered data 
+        // - to pass data down to the repository layer, data must be converted into Entities
+        // - to return data back to the controller, data must be converted into DTOs
         public async Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
             var users = await _userRepository.GetAllAsync(cancellationToken);

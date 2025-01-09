@@ -5,33 +5,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASPNET_WebAPI.Controllers
 {
-    // 10 - Create a controller => root / Controllers / UserController.cs
+    // 12 - Create a Controller => root / Controllers / UserController.cs
 
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        // 10.1 - Create private readonly fields for the services to be injected
+        // 12.1 - Create private readonly fields for the services to be injected
         private readonly IUserService _userService;
 
-        // 10.2 - Inject the services via the constructor
+        // 12.2 - Inject the services via the constructor
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
 
-        // TODO: UPDATE THIS AND THE NUMERIC ORDER OF STEPS
-        // 10.3 - Create the endpoints 
-        // BEST PRACTICES:
+        // 12.3 - Create the endpoints 
+        // CONSIDERATIONS:
         //      - Use the async/await pattern to avoid blocking the thread
-        //      - ❌ Use the IActionResult interface or ActionResult<T> implementation, when multiple return types are possible
-        //      and to return the correct status code and metadata, such as:
-        //      Ok() 200  | CreatedAtAction() 201 | NoContent() 204 | BadRequest() 400 | NotFound() 404
-        //      - ❌ GET methods should be typed with ActionResult<T> to enforce the return of specific type of data
-        //      ( it is not necessary to wrap the response in Ok(), it is implicit in the success case) or return NotFound()
-        //      -                                                                                                                                                                                                                                                                                                                         POST methods should return CreatedAtAction() with the created object or BadRequest()
-        //      - PUT methods should return NoContent() or NotFound()
-        //      - DELETE methods should return NoContent() or NotFound()
+        //      - Use DTOs to accept data via request body and return DTOs to the client (if DTOs are implemented)
+
+        //      - The IActionResult interface or ActionResult<T> implementation, allow multiple return types
+        //          BAD: it does not guarantee Type Safety in compile time 
+        //          GOOD: returns the correct status code and metadata automatically used by Swagger, such as:
+        //                Ok() 200  | CreatedAtAction() 201 | NoContent() 204 | BadRequest() 400 | NotFound() 404
+
+        //      - The Results<T1<T3>, T2> only allows the specific types to be returned
+        //          BAD: It does not automatically provide metadata for Swagger, for that Response Types need to be annotated
+        //                [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
+        //          GOOD: Provides Type Safety and only the specified return types are allowed
 
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         [HttpGet]

@@ -9,10 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options => 
-{
-    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), StatusCodes.Status400BadRequest));
-});
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -28,11 +25,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
-// 9 - Register the Services as a service
-builder.Services.AddScoped<IUserService, UserService>();
-
-// TODO: Document this
+// 9 - Register the Repository as a service
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+// 11 - Register the Services as a service
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddProblemDetails();
 
