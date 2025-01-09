@@ -51,11 +51,13 @@ namespace ASPNET_WebAPI.Controllers
             var user = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (user is null)
+            {
                 return TypedResults.NotFound(new ProblemDetails
                 {
                     Title = "User not found",
                     Detail = "No user found with the given Id."
                 });
+            }
 
             return TypedResults.Ok(user);
         }
@@ -84,21 +86,26 @@ namespace ASPNET_WebAPI.Controllers
             // implicitly returns BadRequest() if the Body of the request is not valid
 
             if (id != user.Id)
+            {
                 return TypedResults.BadRequest(new ProblemDetails
                 {
                     Title = "Invalid request",
                     Detail = "The Id in the route does not match the Id in the request body."
                 });
+            }            
 
             // Not sure if this check should be here, or in the service
             var existingUser = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (existingUser is null)
+            {
                 return TypedResults.NotFound(new ProblemDetails
                 {
                     Title = "User not found",
                     Detail = "No user found with the given Id."
-                }); ;
+                });
+            }
+
 
             await _userService.UpdateAsync(id, user, cancellationToken);
 
@@ -113,11 +120,14 @@ namespace ASPNET_WebAPI.Controllers
             var existingUser = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (existingUser is null)
+            {
                 return TypedResults.NotFound(new ProblemDetails
                 {
                     Title = "Invalid request",
                     Detail = "The Id in the route does not match the Id in the request body."
                 });
+            }
+
 
             await _userService.DeleteAsync(id, cancellationToken);
 
