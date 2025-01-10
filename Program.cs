@@ -1,6 +1,7 @@
 using ASPNET_WebAPI;
 using ASPNET_WebAPI.Data;
-using ASPNET_WebAPI.Repositories.UserRepository;
+using ASPNET_WebAPI.Models;
+using ASPNET_WebAPI.Repositories;
 using ASPNET_WebAPI.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // 9 - Register the Repository as a service
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 
 
 // 11 - Register the Services as a service

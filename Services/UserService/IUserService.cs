@@ -9,7 +9,5 @@ namespace ASPNET_WebAPI.Services.UserService
         Task<UserDTO> CreateAsync(CreateUserDTO user, CancellationToken cancellationToken);
         Task UpdateAsync(int id, UpdateUserDTO user, CancellationToken cancellationToken);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
-
-
     }
 }

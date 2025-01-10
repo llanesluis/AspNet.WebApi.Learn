@@ -13,6 +13,9 @@ namespace ASPNET_WebAPI.DTOs
         [Required]
         [EmailAddress]
         public required string Email { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     }
     public class CreateUserDTO
     {

@@ -35,6 +35,8 @@ namespace ASPNET_WebAPI.Controllers
         //                [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         //          GOOD: Provides Type Safety and only the specified return types are allowed
 
+        //      - A custom Wrapper can be implemented to provide a contract for the return types
+
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<Ok<IEnumerable<UserDTO>>> GetAll(CancellationToken cancellationToken)

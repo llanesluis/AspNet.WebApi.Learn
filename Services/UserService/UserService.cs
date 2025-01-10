@@ -1,6 +1,6 @@
 ﻿using ASPNET_WebAPI.DTOs;
 using ASPNET_WebAPI.Models;
-using ASPNET_WebAPI.Repositories.UserRepository;
+using ASPNET_WebAPI.Repositories;
 
 namespace ASPNET_WebAPI.Services.UserService
 {
@@ -8,10 +8,10 @@ namespace ASPNET_WebAPI.Services.UserService
     public sealed class UserService : IUserService
     {
         // 10.1 - Create private readonly field for the repository to be injected
-        private readonly IUserRepository _userRepository;
+        private readonly IGenericRepository<User> _userRepository;
 
         // 10.2 - Inject the repository via the constructor
-        public UserService(IUserRepository userRepository)
+        public UserService(IGenericRepository<User> userRepository)
         {
             _userRepository = userRepository;
         }
@@ -22,7 +22,7 @@ namespace ASPNET_WebAPI.Services.UserService
         // - to return data back to the controller, data must be converted into DTOs
         public async Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllAsync(cancellationToken);
+            var users = await _userRepository.GetAllAsync();
             
             // Mapping from Entity to DTO
             return users.Select(u => new UserDTO
@@ -35,7 +35,7 @@ namespace ASPNET_WebAPI.Services.UserService
 
         public async Task<UserDTO?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await _userRepository.GetByIdAsNoTrackingAsync(id);
 
             if (user == null)
                 return null;
@@ -58,7 +58,7 @@ namespace ASPNET_WebAPI.Services.UserService
                 Email = user.Email
             };
 
-            await _userRepository.CreateAsync(userToCreate, cancellationToken);
+            await _userRepository.CreateAsync(userToCreate);
 
             // Mapping back from Entity to DTO
             return new UserDTO
@@ -71,7 +71,7 @@ namespace ASPNET_WebAPI.Services.UserService
 
         public async Task UpdateAsync(int id, UpdateUserDTO user, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByIdAsync(id, cancellationToken);
+            var existingUser = await _userRepository.GetByIdAsync(id);
 
             // To be defined, still don't know how to handle this
             if (existingUser is null)
@@ -80,18 +80,18 @@ namespace ASPNET_WebAPI.Services.UserService
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
 
-            await _userRepository.UpdateAsync(existingUser, cancellationToken);
+            await _userRepository.UpdateAsync(existingUser);
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByIdAsync(id, cancellationToken);
+            var existingUser = await _userRepository.GetByIdAsync(id);
 
             // To be defined, still don't know how to handle this
             if (existingUser is null)
                 throw new Exception("User not found");
 
-            await _userRepository.DeleteAsync(existingUser, cancellationToken);
+            _userRepository.DeleteAsync(existingUser);
         }
     }
 }
