@@ -37,7 +37,6 @@ namespace ASPNET_WebAPI.Controllers
 
         //      - A custom Wrapper can be implemented to provide a contract for the return types
 
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<Ok<IEnumerable<UserDTO>>> GetAll(CancellationToken cancellationToken)
         {
@@ -45,8 +44,6 @@ namespace ASPNET_WebAPI.Controllers
             return TypedResults.Ok(users);
         }
 
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}", Name = nameof(GetById))]
         public async Task<Results<Ok<UserDTO>, NotFound<ProblemDetails>>> GetById(int id, CancellationToken cancellationToken)
         {
@@ -64,7 +61,6 @@ namespace ASPNET_WebAPI.Controllers
             return TypedResults.Ok(user);
         }
 
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<CreatedAtRoute<UserDTO>> Create(CreateUserDTO user, CancellationToken cancellationToken)
         {
@@ -79,9 +75,6 @@ namespace ASPNET_WebAPI.Controllers
             );
         }
 
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
         public async Task<Results<NoContent, NotFound<ProblemDetails>, BadRequest<ProblemDetails>>> Update(int id, UpdateUserDTO user, CancellationToken cancellationToken)
         {
@@ -114,7 +107,6 @@ namespace ASPNET_WebAPI.Controllers
             return TypedResults.NoContent();
         }
 
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<Results<NoContent, NotFound<ProblemDetails>>> Delete(int id, CancellationToken cancellationToken)
         {
