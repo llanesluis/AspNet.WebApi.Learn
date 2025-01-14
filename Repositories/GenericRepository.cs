@@ -1,6 +1,7 @@
 ﻿using ASPNET_WebAPI.Data;
 using ASPNET_WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace ASPNET_WebAPI.Repositories
 {
@@ -43,7 +44,13 @@ namespace ASPNET_WebAPI.Repositories
 
         public void Delete(T entity)
         {
-           _dbSet.Remove(entity);
+            // Tells EF to track the entity in its current state if it is not already tracked
+            if (_dbContext.Entry(entity).State == EntityState.Detached)
+            {
+                _dbSet.Attach(entity);
+            }
+
+            _dbSet.Remove(entity);
         }
 
         // * However, if the entity uses auto-generated key values, then the Update method can be used for both cases:
