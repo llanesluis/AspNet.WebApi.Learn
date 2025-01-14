@@ -58,14 +58,15 @@ namespace ASPNET_WebAPI.Services.UserService
                 Email = user.Email
             };
 
-            await _userRepository.CreateAsync(userToCreate);
+            User createdUser = _userRepository.Create(userToCreate);
+            await _userRepository.SaveChangesAsync();
 
             // Mapping back from Entity to DTO
             return new UserDTO
             {
-                Id = userToCreate.Id,
-                Email = userToCreate.Email,
-                Name = userToCreate.Name
+                Id = createdUser.Id,
+                Email = createdUser.Email,
+                Name = createdUser.Name
             };
         }
 
@@ -80,7 +81,9 @@ namespace ASPNET_WebAPI.Services.UserService
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
 
-            await _userRepository.UpdateAsync(existingUser);
+            // Decide if the user gets returned to the controller or not
+            _userRepository.Update(existingUser);
+            await _userRepository.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -91,7 +94,8 @@ namespace ASPNET_WebAPI.Services.UserService
             if (existingUser is null)
                 throw new Exception("User not found");
 
-            _userRepository.DeleteAsync(existingUser);
+            _userRepository.Delete(existingUser);
+            await _userRepository.SaveChangesAsync();
         }
     }
 }
