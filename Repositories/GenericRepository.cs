@@ -7,59 +7,62 @@ namespace ASPNET_WebAPI.Repositories
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseModel
     {
         private readonly AppDbContext _dbContext;
+        private readonly DbSet<T> _dbSet;
         public GenericRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
+            _dbSet = _dbContext.Set<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<T?> GetByIdAsNoTrackingAsync(int id)
         {
-            return await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public T Create(T entity)
         {
-            var addedEntity = _dbContext.Set<T>().Add(entity).Entity;
-            await _dbContext.SaveChangesAsync();
+            var addedEntity = _dbSet.Add(entity).Entity;
             return addedEntity;
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public T Update(T entity)
         {
-            T updatedEntity = _dbContext.Set<T>().Update(entity).Entity;
-            await _dbContext.SaveChangesAsync();
+            T updatedEntity = _dbSet.Update(entity).Entity;
             return updatedEntity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public void Delete(T entity)
         {
-           _dbContext.Set<T>().Remove(entity);
-           await _dbContext.SaveChangesAsync();
+           _dbSet.Remove(entity);
         }
 
         // * However, if the entity uses auto-generated key values, then the Update method can be used for both cases:
         // https://learn.microsoft.com/en-us/ef/core/saving/disconnected-entities#saving-single-entities
-        public async Task<T> UpdateOrCreateAsync(T entity)
+        public T UpdateOrCreate(T entity)
         {
-            var updatedOrCreatedEntity = _dbContext.Set<T>().Update(entity).Entity;
-            await _dbContext.SaveChangesAsync();
+            var updatedOrCreatedEntity = _dbSet.Update(entity).Entity;
             return updatedOrCreatedEntity;
 
             // If the entity is not using auto-generated keys,
             // then the application must decide whether the entity should be inserted or updated: 
             // return _dbContext.Entry(entity).IsKeySet
-            //        ? _dbContext.Set<T>().Update(entity).Entity
-            //        : _dbContext.Set<T>().Add(entity).Entity;
+            //        ? _dbSet.Update(entity).Entity
+            //        : _dbSet.Add(entity).Entity;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
